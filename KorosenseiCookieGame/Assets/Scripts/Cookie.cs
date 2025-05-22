@@ -5,8 +5,8 @@ public class Cookie : MonoBehaviour
 {
     [SerializeField] float hoverHeight;
     [SerializeField] float hoverFrequency;
-    float height;
-    float baseHeight; // The base y-coordinate of the object, where it should start before starting sine movement
+    float height; // Where the object should move to on the y-axis
+    float baseHeight; // The base y-coordinate of the object, where it should start before starting sine movement (center of the sine wave)
 
     void Start()
     {
