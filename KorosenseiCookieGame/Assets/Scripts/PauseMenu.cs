@@ -107,6 +107,7 @@ public class PauseMenu : MonoBehaviour
 
         string resDropdownText = resolutionDropdown.options[resolutionDropdown.value].text; // Get the text from the resolution dropdown
         Resolution newRes = resolutions[resDropdownText];
+        previouslySelectedResolution = resolutionDropdown.value;
 
         Screen.SetResolution(newRes.width, newRes.height, screenMode);
     }
