@@ -1,10 +1,10 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
-public class ScoreDisplay : MonoBehaviour
+public class MainCamera : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI scoreDisplay;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,6 +14,6 @@ public class ScoreDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        scoreDisplay.text = $"Score: {GameManager.instance.score}";
+
     }
 }

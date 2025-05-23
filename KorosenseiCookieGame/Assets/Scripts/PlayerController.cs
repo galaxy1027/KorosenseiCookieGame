@@ -1,50 +1,24 @@
-using System;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] float moveSpeed; // Player's maximum speed
     [SerializeField] float jumpForce; // How much force can be applied when jumping
-    [SerializeField] PlayerInputActions playerControls;
+    // [SerializeField] PlayerInputActions playerControls;
     [SerializeField] Rigidbody2D rb;
-
-    [SerializeField] Vector2 groundBoxSize;
-    [SerializeField] float groundCastDistance;
-    [SerializeField] LayerMask groundLayer;
-    InputAction move;
-    InputAction jump;
-    InputAction crouch;
+    [SerializeField] Vector2 groundBoxSize; // Size of box used for box-cast grounding check
+    [SerializeField] float groundCastDistance; // How far the box is from the player's origin
+    [SerializeField] LayerMask groundLayer; // Reference to the ground layer
     float velocity; // Player's current speed (and direction)
     float moveDirection; // Direction player is moving horizontally
     float baseGravityScale; // How strong gravity should be normally, can change when fast falling
     [SerializeField] float maxFallSpeed; // Prevent the player from falling at insane speeds by clamping fall speed to this
+    InputManager inputs; // Reference to the input manager
 
-
-    void Awake()
+    void Start()
     {
-        playerControls = new PlayerInputActions();
         baseGravityScale = rb.gravityScale;
-    }
-
-    void OnEnable()
-    {
-        move = playerControls.Player.Move;
-        jump = playerControls.Player.Jump;
-        crouch = playerControls.Player.Crouch;
-        move.Enable();
-        jump.Enable();
-        crouch.Enable();
-    }
-
-    void OnDisable()
-    {
-        move.Disable();
-        jump.Disable();
-        crouch.Disable();
+        inputs = InputManager.instance;
     }
 
     void Update()
@@ -61,7 +35,7 @@ public class Player : MonoBehaviour
          */
         if (rb.linearVelocityY < 0) // The player is moving downwards
         {
-            if (crouch.IsPressed()) // The player wants to fast fall
+            if (inputs.crouch.IsPressed()) // The player wants to fast fall
             {
                 Debug.Log("Fast falling");
                 rb.gravityScale = baseGravityScale * 3f;
@@ -69,14 +43,13 @@ public class Player : MonoBehaviour
             else
             {
                 rb.gravityScale = baseGravityScale * 1.5f;
-
             }
             // Check to see if the player is moving too fast, restrict to maximum speed if needed.
             rb.linearVelocityX = Mathf.Max(rb.linearVelocityX, -maxFallSpeed);
         }
 
 
-        else if (!jump.IsPressed())
+        else if (!inputs.jump.IsPressed())
         {
             rb.gravityScale = baseGravityScale * 3f;
         }
@@ -89,16 +62,14 @@ public class Player : MonoBehaviour
 
     void ProcessMovement()
     {
-        moveDirection = move.ReadValue<float>();
+        moveDirection = inputs.move.ReadValue<float>();
         rb.linearVelocityX = moveDirection * moveSpeed;
     }
 
     void ProcessJump()
     {
-        if (jump.triggered && IsGrounded())
-        {
+        if (inputs.jump.triggered && IsGrounded())
             rb.linearVelocityY += jumpForce;
-        }
     }
 
     /*

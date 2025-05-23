@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Cookie : MonoBehaviour
@@ -22,7 +21,7 @@ public class Cookie : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            GameManager.Instance.AddScore(1);
+            GameManager.instance.AddScore(1);
             Destroy(gameObject);
         }
     }
