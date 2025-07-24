@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField] Vector2 groundBoxSize; // Size of box used for box-cast grounding check
     [SerializeField] float groundCastDistance; // How far the box is from the player's origin
     [SerializeField] LayerMask groundLayer; // Reference to the ground layer
+    [SerializeField] GameObject spawnPoint;
     float velocity; // Player's current speed (and direction)
     float moveDirection; // Direction player is moving horizontally
     float baseGravityScale; // How strong gravity should be normally, can change when fast falling
@@ -19,12 +21,18 @@ public class Player : MonoBehaviour
     {
         baseGravityScale = rb.gravityScale;
         inputs = InputManager.instance;
+        transform.position = spawnPoint.transform.position;
     }
 
     void Update()
     {
         ProcessMovement();
         ProcessJump();
+    }
+
+    void Respawn()
+    {
+        transform.position = spawnPoint.transform.position;
     }
 
     void FixedUpdate()
@@ -86,5 +94,12 @@ public class Player : MonoBehaviour
         Gizmos.DrawWireCube(transform.position - transform.up * groundCastDistance, groundBoxSize);
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            Respawn();
+        }
+    }
 
 }
