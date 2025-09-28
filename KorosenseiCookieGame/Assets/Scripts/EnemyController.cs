@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-
     [SerializeField] float speed = 1f;
     [SerializeField] Rigidbody2D rb;
     [SerializeField] float moveRange = 2f;

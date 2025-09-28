@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] float moveSpeed; // Player's maximum speed
     [SerializeField] float jumpForce; // How much force can be applied when jumping
@@ -28,56 +28,42 @@ public class Player : MonoBehaviour
     {
         ProcessMovement();
         ProcessJump();
+        if (rb.linearVelocityY < 0)
+            ProcessFalling();
+        else
+            rb.gravityScale = baseGravityScale;
     }
 
     void Respawn()
     {
         transform.position = spawnPoint.transform.position;
     }
-
-    void FixedUpdate()
-    {
-        /*
-            Handling fall speed
-            The player's velocity increases as they fall to make the jump feel less 'floaty'. This effect is strengthened if the player is pressing down.
-         */
-        if (rb.linearVelocityY < 0) // The player is moving downwards
-        {
-            if (inputs.crouch.IsPressed()) // The player wants to fast fall
-            {
-                Debug.Log("Fast falling");
-                rb.gravityScale = baseGravityScale * 3f;
-            }
-            else
-            {
-                rb.gravityScale = baseGravityScale * 1.5f;
-            }
-            // Check to see if the player is moving too fast, restrict to maximum speed if needed.
-            rb.linearVelocityX = Mathf.Max(rb.linearVelocityX, -maxFallSpeed);
-        }
-
-
-        else if (!inputs.jump.IsPressed())
-        {
-            rb.gravityScale = baseGravityScale * 3f;
-        }
-
-        else // Restore gravity to normal
-        {
-            rb.gravityScale = baseGravityScale;
-        }
-    }
-
     void ProcessMovement()
     {
         moveDirection = inputs.move.ReadValue<float>();
         rb.linearVelocityX = moveDirection * moveSpeed;
+
+        /* Check to see if the player is moving too fast, restrict to maximum speed if needed. */
+        rb.linearVelocityX = Mathf.Max(rb.linearVelocityX, -maxFallSpeed);
     }
 
     void ProcessJump()
     {
         if (inputs.jump.triggered && IsGrounded())
             rb.linearVelocityY += jumpForce;
+    }
+
+    /*
+        Handling fall speed
+        The player's velocity increases as they fall to make the jump feel less 'floaty'. This effect is strengthened if the player is pressing down.
+    */
+    void ProcessFalling()
+    {
+        /* Check if player wants to fast fall */
+        if (inputs.crouch.IsPressed())
+            rb.gravityScale = baseGravityScale * 3f;
+        else
+            rb.gravityScale = baseGravityScale * 1.5f;
     }
 
     /*

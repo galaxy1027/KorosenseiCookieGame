@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     public InputAction jump;
     public InputAction crouch;
     public InputAction pause;
+    public InputAction grapple;
 
     void Awake()
     {
@@ -32,10 +33,12 @@ public class InputManager : MonoBehaviour
         jump = inputActions.Player.Jump;
         crouch = inputActions.Player.Crouch;
         pause = inputActions.UI.Pause;
+        grapple = inputActions.Player.Grapple;
         move.Enable();
         jump.Enable();
         crouch.Enable();
         pause.Enable();
+        grapple.Enable();
     }
 
     void OnDisable()
@@ -44,6 +47,7 @@ public class InputManager : MonoBehaviour
         jump.Disable();
         crouch.Disable();
         pause.Disable();
+        grapple.Disable();
     }
 
 }
